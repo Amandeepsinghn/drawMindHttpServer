@@ -1,10 +1,30 @@
+import cors from "cors";
+import { userRouter } from "./routes/user";
+import { roomRouter } from "./routes/room";
+import { chatRouter } from "./routes/chat";
 import express from "express";
-import { testingRouter } from "./routes/test";
 const app = express();
-const port = process.env.PORT || 8080;
 
-app.use("/", testingRouter);
+declare global {
+  namespace Express {
+    interface Request {
+      userId: string;
+    }
+  }
+}
 
-app.listen(port, () => {
-  return console.log(`Server is listening on ${port}`);
+app.use(cors());
+app.use(express.json());
+
+// hello dfsv asdfa bg
+app.get("/", (req, res) => {
+  res.json({
+    message: "this is it my friend",
+  });
 });
+
+app.use("/api", chatRouter);
+app.use("/api", roomRouter);
+app.use("/api", userRouter);
+
+app.listen(3000);
