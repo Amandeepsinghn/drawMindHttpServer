@@ -8,8 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.signIn = exports.signUp = exports.signinSchema = exports.createUserSchema = void 0;
+const prisma_1 = require("../prisma");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const JWT_SECRET = "123212321";
 const zod_1 = require("zod");
 exports.createUserSchema = zod_1.z.object({
@@ -22,55 +27,56 @@ exports.signinSchema = zod_1.z.object({
     password: zod_1.z.string(),
 });
 const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // const parsedData = createUserSchema.safeParse(req.body);
-    // if (!parsedData.success) {
-    //   res.status(500).json({
-    //     body: "Incorrect inputs",
-    //   });
-    //   return;
-    // }
-    // try {
-    //   const user = await prismaClient.user.create({
-    //     data: {
-    //       email: parsedData.data.username,
-    //       password: parsedData.data.password,
-    //       name: parsedData.data.name,
-    //     },
-    //   });
-    //   res.status(200).json({
-    //     userId: user.id,
-    //   });
-    // } catch (e) {
-    //   res.status(411).json({
-    //     body: "User already exists with this",
-    //   });
-    // }
+    const parsedData = exports.createUserSchema.safeParse(req.body);
+    if (!parsedData.success) {
+        res.status(500).json({
+            body: "Incorrect inputs",
+        });
+        return;
+    }
+    try {
+        const user = yield prisma_1.prismaClient.user.create({
+            data: {
+                email: parsedData.data.username,
+                password: parsedData.data.password,
+                name: parsedData.data.name,
+            },
+        });
+        res.status(200).json({
+            userId: user.id,
+        });
+    }
+    catch (e) {
+        res.status(411).json({
+            body: "User already exists with this",
+        });
+    }
 });
 exports.signUp = signUp;
 const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // const parsedData = signinSchema.safeParse(req.body);
-    // if (!parsedData.success) {
-    //   res.status(500).json({
-    //     body: "Incorrect inputs",
-    //   });
-    //   return;
-    // }
-    // const user = await prismaClient.user.findFirst({
-    //   where: {
-    //     email: parsedData.data.username,
-    //     password: parsedData.data.password,
-    //   },
-    // });
-    // if (!user) {
-    //   res.status(403).json({
-    //     message: "Not authorized",
-    //   });
-    //   return;
-    // }
-    // const token = jwt.sign({ userId: user?.id }, JWT_SECRET);
-    // res.status(200).json({
-    //   token: token,
-    // });
+    const parsedData = exports.signinSchema.safeParse(req.body);
+    if (!parsedData.success) {
+        res.status(500).json({
+            body: "Incorrect inputs",
+        });
+        return;
+    }
+    const user = yield prisma_1.prismaClient.user.findFirst({
+        where: {
+            email: parsedData.data.username,
+            password: parsedData.data.password,
+        },
+    });
+    if (!user) {
+        res.status(403).json({
+            message: "Not authorized",
+        });
+        return;
+    }
+    const token = jsonwebtoken_1.default.sign({ userId: user === null || user === void 0 ? void 0 : user.id }, JWT_SECRET);
+    res.status(200).json({
+        token: token,
+    });
 });
 exports.signIn = signIn;
 //# sourceMappingURL=longinController.js.map
