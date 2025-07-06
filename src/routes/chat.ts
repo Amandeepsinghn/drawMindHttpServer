@@ -4,7 +4,7 @@ import { chatDelete, chats } from "../controllers/chatControllers";
 
 const router = express.Router();
 
-router.get("/chat/:roomId", middleware, chats);
+router.get("/chat/:roomId", chats);
 router.post("/deleteChat", middleware, chatDelete);
 
 export const chatRouter: Router = router;
