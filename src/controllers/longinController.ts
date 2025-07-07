@@ -6,13 +6,13 @@ const JWT_SECRET = "123212321";
 import { z } from "zod";
 
 export const createUserSchema = z.object({
-  username: z.string().min(3).max(20),
+  username: z.string().min(3).max(60),
   password: z.string(),
   name: z.string(),
 });
 
 export const signinSchema = z.object({
-  username: z.string().min(3).max(20),
+  username: z.string().min(3).max(60),
   password: z.string(),
 });
 

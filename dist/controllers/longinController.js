@@ -18,12 +18,12 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const JWT_SECRET = "123212321";
 const zod_1 = require("zod");
 exports.createUserSchema = zod_1.z.object({
-    username: zod_1.z.string().min(3).max(20),
+    username: zod_1.z.string().min(3).max(60),
     password: zod_1.z.string(),
     name: zod_1.z.string(),
 });
 exports.signinSchema = zod_1.z.object({
-    username: zod_1.z.string().min(3).max(20),
+    username: zod_1.z.string().min(3).max(60),
     password: zod_1.z.string(),
 });
 const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
